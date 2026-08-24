@@ -226,8 +226,12 @@ export const deleteMediaFromSupabase = async (id: string): Promise<void> => {
  * Fetch a CMS section payload from Supabase
  */
 export const fetchCMSContentFromSupabase = async <T>(key: string): Promise<T | null> => {
+  const config = getSupabaseConfig();
+  console.log(`[Diagnostic] Supabase URL in use: ${config.url || 'None'}`);
+
   const client = getSupabaseClient();
   if (!client) {
+    console.log(`[Diagnostic] CMS Key ${key} loaded from Supabase: false (Client not configured, using fallback default)`);
     return null;
   }
 
@@ -240,14 +244,19 @@ export const fetchCMSContentFromSupabase = async <T>(key: string): Promise<T | n
 
     if (error) {
       console.warn(`[Supabase CMS Fetch Warning] key=${key}:`, error.message);
+      console.log(`[Diagnostic] CMS Key ${key} loaded from Supabase: false (Error/Fallback)`);
       return null;
     }
 
-    if (data && data.payload) {
+    const found = !!(data && data.payload);
+    console.log(`[Diagnostic] CMS Key ${key} loaded from Supabase: ${found} (${found ? 'Remote database content' : 'Using default fallback'})`);
+
+    if (found) {
       return data.payload as T;
     }
   } catch (err) {
     console.warn(`[Supabase CMS Fetch Exception] key=${key}:`, err);
+    console.log(`[Diagnostic] CMS Key ${key} loaded from Supabase: false (Exception/Fallback)`);
   }
   return null;
 };
@@ -262,6 +271,8 @@ export const saveCMSContentToSupabase = async (key: string, payload: any): Promi
   }
 
   const config = getSupabaseConfig();
+  console.log(`[Diagnostic] Supabase URL in use for save: ${config.url || 'None'}`);
+
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`
@@ -274,6 +285,8 @@ export const saveCMSContentToSupabase = async (key: string, payload: any): Promi
     headers,
     body: JSON.stringify({ key, payload, config })
   });
+
+  console.log(`[Diagnostic] /api/cms save response status: ${response.status} (${response.statusText})`);
 
   const resData = await response.json().catch(() => ({}));
 
