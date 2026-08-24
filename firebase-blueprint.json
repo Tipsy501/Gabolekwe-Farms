@@ -1,0 +1,83 @@
+{
+  "entities": {
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Administrator user record",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["email", "role", "status"]
+    },
+    "SiteConfig": {
+      "title": "SiteConfig",
+      "description": "Global site configuration",
+      "type": "object",
+      "properties": {
+        "siteName": { "type": "string" },
+        "tagline": { "type": "string" }
+      }
+    },
+    "MediaItem": {
+      "title": "MediaItem",
+      "description": "Media asset metadata stored per document",
+      "type": "object",
+      "properties": {
+        "publicId": { "type": "string" },
+        "secureUrl": { "type": "string" },
+        "url": { "type": "string" },
+        "filename": { "type": "string" },
+        "width": { "type": "number" },
+        "height": { "type": "number" },
+        "format": { "type": "string" },
+        "fileSize": { "type": "number" },
+        "uploadedAt": { "type": "string" },
+        "uploadedBy": { "type": "string" },
+        "folder": { "type": "string" },
+        "caption": { "type": "string" }
+      },
+      "required": ["publicId", "secureUrl", "filename"]
+    }
+  },
+  "firestore": {
+    "/media/{mediaId}": {
+      "schema": "MediaItem",
+      "description": "Collection of individual media documents"
+    },
+    "/admins/{adminId}": {
+      "schema": "AdminUser",
+      "description": "Collection of administrator users with roles"
+    },
+    "/cms/{document=**}": {
+      "schema": "SiteConfig",
+      "description": "CMS configuration and photos"
+    },
+    "/slides/{slideId}": {
+      "schema": "object",
+      "description": "Hero slideshow items"
+    },
+    "/services/{serviceId}": {
+      "schema": "object",
+      "description": "Service items"
+    },
+    "/beefProducts/{code}": {
+      "schema": "object",
+      "description": "Beef grades and products"
+    },
+    "/gallery/{itemId}": {
+      "schema": "object",
+      "description": "Gallery items"
+    },
+    "/news/{articleId}": {
+      "schema": "object",
+      "description": "News articles"
+    },
+    "/enquiries/{enquiryId}": {
+      "schema": "object",
+      "description": "Enquiries submitted by visitors"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Gabolekwe Farms",
+  "description": "Premium agricultural website for Gabolekwe Farms in Botswana featuring horticulture, beef products, irrigation systems, and agricultural technology.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,75 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isSuperAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'topogabolekwe@gmail.com' ||
+        (exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.email == 'topogabolekwe@gmail.com' &&
+         get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'Super Admin' &&
+         get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.status == 'Active')
+      );
+    }
+
+    function isAdminUser() {
+      return isSignedIn() && (
+        request.auth.token.email == 'topogabolekwe@gmail.com' ||
+        (exists(/databases/$(database)/documents/admins/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.status == 'Active')
+      );
+    }
+
+    match /admins/{adminId} {
+      allow read: if isAdminUser();
+      allow create, update, delete: if isSuperAdmin();
+    }
+
+    match /cms/{document=**} {
+      allow read: if true;
+      allow write: if isAdminUser() || isSignedIn();
+    }
+
+    match /media/{mediaId} {
+      allow read: if true;
+      allow create, update, delete: if isSignedIn() || isAdminUser();
+    }
+
+    match /slides/{slideId} {
+      allow read: if true;
+      allow write: if isAdminUser();
+    }
+
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdminUser();
+    }
+
+    match /beefProducts/{code} {
+      allow read: if true;
+      allow write: if isAdminUser();
+    }
+
+    match /gallery/{itemId} {
+      allow read: if true;
+      allow write: if isAdminUser();
+    }
+
+    match /news/{articleId} {
+      allow read: if true;
+      allow write: if isAdminUser();
+    }
+
+    match /enquiries/{enquiryId} {
+      allow read, write: if isAdminUser() || request.method == 'create';
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
