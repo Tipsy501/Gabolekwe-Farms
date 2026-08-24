@@ -1,6 +1,7 @@
 import React from 'react';
 import { Sprout, MapPin, Phone, Mail, ShieldCheck } from 'lucide-react';
 import { useCMS } from '../lib/cmsStore';
+import { FarmLogo } from './FarmLogo';
 
 interface FooterProps {
   onNavigate: (sectionId: string) => void;
@@ -16,13 +17,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           {/* Brand Info */}
           <div className="lg:col-span-2 space-y-6">
             <div className="flex items-center gap-3">
-              {siteConfig.logoUrl ? (
-                <img src={siteConfig.logoUrl} alt="Gabolekwe Farms Logo" className="w-10 h-10 object-contain" />
-              ) : (
-                <div className="w-10 h-10 bg-emerald-950 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                  <Sprout className="w-5 h-5" />
-                </div>
-              )}
+              <FarmLogo />
               <div>
                 <span className="block text-lg font-serif text-white tracking-wide font-bold">
                   Gabolekwe Farms

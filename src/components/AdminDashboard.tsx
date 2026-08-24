@@ -2890,75 +2890,14 @@ export const AdminDashboard: React.FC = () => {
               <div>
                 <h2 className="text-2xl font-serif text-[#F8F9FA] mb-1">Site & Branding Settings</h2>
                 <p className="text-xs text-[#F8F9FA]/60 uppercase tracking-widest font-semibold mb-6">
-                  Manage Gabolekwe Farms logo, favicon, corporate contact info, and social channels
+                  Manage Gabolekwe Farms corporate identity, contact info, and social channels
                 </p>
               </div>
 
-              {/* LOGO & FAVICON UPLOAD SECTION */}
-              <div className="space-y-6 bg-black/40 border border-white/10 p-6 rounded-lg">
-                <h3 className="text-lg font-serif text-[#F8F9FA] pb-2 border-b border-white/10 font-bold flex items-center gap-2">
-                  <span>Gabolekwe Farms Logo & Favicon Assets</span>
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Logo Upload */}
-                  <div className="space-y-3">
-                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#F8F9FA]/70">Corporate Logo URL</label>
-                    <div className="flex gap-2">
-                      <input 
-                        type="url" 
-                        value={configForm.logoUrl || ''} 
-                        onChange={e => setConfigForm({...configForm, logoUrl: e.target.value})} 
-                        placeholder="https://... (PNG/SVG/JPG)"
-                        className="flex-1 bg-black/50 border border-white/10 p-3.5 text-sm text-white rounded" 
-                      />
-                      <button
-                        type="button"
-                        onClick={() => openMediaPickerFor((url) => setConfigForm({...configForm, logoUrl: url}))}
-                        className="px-4 py-2 bg-[#A4C293]/20 hover:bg-[#A4C293]/30 border border-[#A4C293]/40 text-[#A4C293] text-xs font-bold uppercase tracking-wider rounded flex items-center gap-1.5 shrink-0 transition-colors"
-                      >
-                        <ImageIcon className="w-4 h-4" />
-                        <span>Media Library</span>
-                      </button>
-                    </div>
-                    {configForm.logoUrl && (
-                      <div className="flex items-center gap-3 p-3 bg-black/60 border border-white/10 rounded">
-                        <img src={configForm.logoUrl} alt="Logo Preview" className="h-10 w-auto object-contain bg-white/10 p-1 rounded" />
-                        <span className="text-[10px] text-white/60">Logo Preview Active</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Favicon Upload */}
-                  <div className="space-y-3">
-                    <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#F8F9FA]/70">Browser Favicon URL</label>
-                    <div className="flex gap-2">
-                      <input 
-                        type="url" 
-                        value={configForm.faviconUrl || ''} 
-                        onChange={e => setConfigForm({...configForm, faviconUrl: e.target.value})} 
-                        placeholder="https://... (ICO/PNG)"
-                        className="flex-1 bg-black/50 border border-white/10 p-3.5 text-sm text-white rounded" 
-                      />
-                      <button
-                        type="button"
-                        onClick={() => openMediaPickerFor((url) => setConfigForm({...configForm, faviconUrl: url}))}
-                        className="px-4 py-2 bg-[#A4C293]/20 hover:bg-[#A4C293]/30 border border-[#A4C293]/40 text-[#A4C293] text-xs font-bold uppercase tracking-wider rounded flex items-center gap-1.5 shrink-0 transition-colors"
-                      >
-                        <ImageIcon className="w-4 h-4" />
-                        <span>Media Library</span>
-                      </button>
-                    </div>
-                    {configForm.faviconUrl && (
-                      <div className="flex items-center gap-3 p-3 bg-black/60 border border-white/10 rounded">
-                        <img src={configForm.faviconUrl} alt="Favicon Preview" className="w-8 h-8 object-contain bg-white/10 p-1 rounded" />
-                        <span className="text-[10px] text-white/60">Favicon Preview Active</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+              {/* SITE NAME & TAGLINE */}
+              <div className="space-y-4 bg-black/40 border border-white/10 p-6 rounded-lg">
+                <h3 className="text-lg font-serif text-[#F8F9FA] pb-2 border-b border-white/10 font-bold">General Information</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#F8F9FA]/70 mb-2">Site Name</label>
                     <input type="text" value={configForm.siteName || ''} onChange={e => setConfigForm({...configForm, siteName: e.target.value})} className="w-full bg-black/50 border border-white/10 p-3.5 text-sm text-white rounded" />

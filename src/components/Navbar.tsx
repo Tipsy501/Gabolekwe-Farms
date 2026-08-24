@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, ShieldCheck } from 'lucide-react';
 import { useCMS } from '../lib/cmsStore';
+import { FarmLogo } from './FarmLogo';
 
 interface NavbarProps {
   currentSection: string;
@@ -50,9 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentSection, onNavigate }) =>
             onClick={() => onNavigate('home')}
             className="flex items-center gap-3 text-left focus:outline-none group"
           >
-            {siteConfig.logoUrl ? (
-              <img src={siteConfig.logoUrl} alt={siteConfig.siteName} className="h-10 w-auto object-contain" />
-            ) : null}
+            <FarmLogo />
             <div className="flex flex-col">
               <span className="text-2xl font-serif tracking-tight text-slate-900 group-hover:text-emerald-700 transition-colors font-bold">
                 {siteConfig.siteName || 'Gabolekwe Farms'}
