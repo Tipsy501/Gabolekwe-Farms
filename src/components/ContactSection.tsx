@@ -131,11 +131,11 @@ export const ContactSection: React.FC = () => {
               </div>
               <h3 className="text-xs font-bold text-emerald-200 uppercase tracking-[0.2em] mb-2">Instant WhatsApp Chat</h3>
               <p className="text-xl font-bold font-serif text-white mb-2">
-                {siteConfig.whatsapp || '+267 73004101'}
+                {siteConfig.whatsapp || '+267 74 061 099'}
               </p>
             </div>
             <a
-              href={`https://wa.me/${siteConfig.whatsapp ? siteConfig.whatsapp.replace(/[^0-9]/g, '') : '26773004101'}?text=Hello%20Gabolekwe%20Farms,%20I%20would%20like%20to%20make%20an%20enquiry.`}
+              href={`https://wa.me/${siteConfig.whatsapp ? siteConfig.whatsapp.replace(/[^0-9]/g, '') : '26774061099'}?text=Hello%20Gabolekwe%20Farms,%20I%20would%20like%20to%20make%20an%20enquiry.`}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 pt-4 border-t border-emerald-800/80 inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#25D366] hover:text-white transition-colors"

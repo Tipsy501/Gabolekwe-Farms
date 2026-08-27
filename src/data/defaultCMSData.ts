@@ -99,7 +99,7 @@ export const DEFAULT_BEEF_PAGE_CONFIG: BeefPageConfig = {
   heroCta: 'Explore Beef Products',
   badgeText: 'Gweta, Botswana • Export Quality Standards',
   whatsappCtaText: 'WhatsApp Wholesale Chat',
-  whatsappNumber: '+267 73004101',
+  whatsappNumber: '+267 74 061 099',
 
   introEyebrow: 'Excellence in Livestock Husbandry',
   introHeading: 'Pristine Grasslands & Ethical Stewardship',
@@ -187,7 +187,7 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   twitter: 'https://twitter.com/gabolekwefarms',
   linkedin: 'https://linkedin.com/company/gabolekwe-farms',
   instagram: 'https://instagram.com/gabolekwefarms',
-  whatsapp: '+267 73004101',
+  whatsapp: '+267 74 061 099',
   seoTitle: 'Gabolekwe Farms — Agricultural Excellence in Gweta, Botswana',
   seoDescription: 'Gabolekwe Farms is a commercial agricultural enterprise in Gweta, Botswana specializing in fresh horticulture produce, commercial beef products, irrigation design, and farm management technology.',
   horticultureHeroTitle: 'Horticulture Division',

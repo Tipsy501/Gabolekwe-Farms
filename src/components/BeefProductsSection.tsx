@@ -54,7 +54,7 @@ export const BeefProductsSection: React.FC<BeefProductsSectionProps> = ({ onNavi
     }, 3000);
   };
 
-  const whatsappNum = beefPageConfig.whatsappNumber.replace(/[^0-9]/g, '') || '26773004101';
+  const whatsappNum = (beefPageConfig.whatsappNumber || '').replace(/[^0-9]/g, '') || '26774061099';
   const whatsappUrl = `https://wa.me/${whatsappNum}?text=Hello%20Gabolekwe%20Farms,%20I%20would%20like%20to%20enquire%20about%20your%20premium%20beef%20products%20and%20wholesale%20availability.`;
 
   const getIcon = (iconName: string) => {

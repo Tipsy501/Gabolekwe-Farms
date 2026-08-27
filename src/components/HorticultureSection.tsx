@@ -65,7 +65,9 @@ export const HorticultureSection: React.FC<HorticultureSectionProps> = ({ onNavi
     }, 3000);
   };
 
-  const whatsappNumber = siteConfig.phone.replace(/[^0-9]/g, '') || '26772820542';
+  const whatsappNumber = siteConfig.whatsapp
+    ? siteConfig.whatsapp.replace(/[^0-9]/g, '')
+    : (siteConfig.phone ? siteConfig.phone.replace(/[^0-9]/g, '') : '26774061099') || '26774061099';
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Hello%20Gabolekwe%20Farms,%20I%20would%20like%20to%20enquire%20about%20your%20fresh%20horticulture%20produce.`;
 
   const renderFeatureIcon = (iconName: string) => {

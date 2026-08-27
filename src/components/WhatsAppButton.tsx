@@ -3,7 +3,7 @@ import { useCMS } from '../lib/cmsStore';
 
 export const WhatsAppButton: React.FC = () => {
   const { siteConfig } = useCMS();
-  const rawNum = siteConfig.whatsapp ? siteConfig.whatsapp.replace(/[^0-9]/g, '') : '26773004101';
+  const rawNum = siteConfig.whatsapp ? siteConfig.whatsapp.replace(/[^0-9]/g, '') : '26774061099';
   const phoneNumber = rawNum.startsWith('267') ? rawNum : `267${rawNum}`;
   const defaultMessage = encodeURIComponent('Hello Gabolekwe Farms, I would like to make an enquiry.');
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${defaultMessage}`;

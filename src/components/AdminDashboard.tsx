@@ -2926,7 +2926,7 @@ export const AdminDashboard: React.FC = () => {
                   </div>
                   <div>
                     <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#F8F9FA]/70 mb-2">WhatsApp Number</label>
-                    <input type="text" value={configForm.whatsapp || ''} onChange={e => setConfigForm({...configForm, whatsapp: e.target.value})} className="w-full bg-black/50 border border-white/10 p-3.5 text-sm text-white rounded" placeholder="+267 73004101" />
+                    <input type="text" value={configForm.whatsapp || ''} onChange={e => setConfigForm({...configForm, whatsapp: e.target.value})} className="w-full bg-black/50 border border-white/10 p-3.5 text-sm text-white rounded" placeholder="+267 74 061 099" />
                   </div>
                 </div>
                 <div>

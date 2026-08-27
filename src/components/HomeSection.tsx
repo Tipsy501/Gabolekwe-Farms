@@ -355,7 +355,7 @@ export const HomeSection: React.FC<HomeSectionProps> = ({ onNavigate }) => {
               <span>Call {siteConfig.phone || '+267 72 820 542'}</span>
             </a>
             <a
-              href={`https://wa.me/${siteConfig.whatsapp ? siteConfig.whatsapp.replace(/[^0-9]/g, '') : '26772820542'}`}
+              href={`https://wa.me/${siteConfig.whatsapp ? siteConfig.whatsapp.replace(/[^0-9]/g, '') : '26774061099'}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-8 py-4 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-2"
