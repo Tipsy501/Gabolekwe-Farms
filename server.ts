@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import { createClient } from '@supabase/supabase-js';
 
@@ -246,23 +247,49 @@ app.delete('/api/media/:id', async (req, res) => {
 });
 
 async function startServer() {
-  if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa'
-    });
-    app.use(vite.middlewares);
+  // API routes first
+  // ... (API routes are defined above)
+
+  // Vite middleware for development or fallback if dist doesn't exist
+  const distPath = path.join(process.cwd(), 'dist');
+  const hasDist = fs.existsSync(distPath);
+
+  if (process.env.NODE_ENV !== 'production' || !hasDist) {
+    try {
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: 'spa',
+      });
+      app.use(vite.middlewares);
+      console.log('[Express Server] Vite middleware mode enabled');
+    } catch (e) {
+      console.warn('[Express Server] Failed to start Vite middleware, falling back to static dist:', e);
+      if (hasDist) {
+        app.use(express.static(distPath));
+        app.get('*all', (_req, res) => {
+          res.sendFile(path.join(distPath, 'index.html'));
+        });
+      }
+    }
   } else {
-    const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
-    app.get('*', (_req, res) => {
+    app.get('*all', (_req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`[Express Server] Running on http://0.0.0.0:${PORT}`);
-  });
+  // Only call app.listen if not running as a Vercel serverless function
+  if (process.env.VERCEL !== '1') {
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`[Express Server] Running on http://0.0.0.0:${PORT}`);
+    });
+  }
 }
 
-startServer();
+// Start server locally / container runtime
+startServer().catch(err => {
+  console.error('[Express Server] Startup error:', err);
+});
+
+export default app;
+
