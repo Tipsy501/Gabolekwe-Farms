@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, ShieldCheck } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useCMS } from '../lib/cmsStore';
 import { FarmLogo } from './FarmLogo';
 
@@ -82,16 +82,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentSection, onNavigate }) =>
           {/* Right CTA */}
           <div className="hidden lg:flex items-center gap-4">
             <button
-              onClick={() => {
-                window.location.hash = 'admin';
-              }}
-              className="text-slate-700 hover:text-emerald-700 p-2 text-xs uppercase tracking-widest font-bold flex items-center gap-1.5 transition-colors"
-              title="Admin Portal"
-            >
-              <ShieldCheck className="w-4 h-4 text-emerald-700" />
-              <span>Admin</span>
-            </button>
-            <button
               onClick={() => onNavigate('contact')}
               className="bg-emerald-700 hover:bg-emerald-800 text-white px-6 py-2.5 text-xs uppercase tracking-widest font-bold transition-colors shadow-xs"
             >
@@ -133,16 +123,6 @@ export const Navbar: React.FC<NavbarProps> = ({ currentSection, onNavigate }) =>
               </button>
             ))}
             <div className="pt-6 mt-4 border-t border-slate-200 flex flex-col gap-4">
-              <button
-                onClick={() => {
-                  window.location.hash = 'admin';
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full bg-slate-900 text-white py-3 text-xs uppercase tracking-widest font-bold text-center hover:bg-slate-800 transition-colors shadow-xs flex items-center justify-center gap-2"
-              >
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>Admin Portal</span>
-              </button>
               <button
                 onClick={() => {
                   onNavigate('contact');

@@ -116,15 +116,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <div className="flex items-center gap-6">
             <span className="hover:text-slate-300 cursor-pointer">Privacy Policy</span>
             <span className="hover:text-slate-300 cursor-pointer">Terms of Service</span>
-            <button
-              onClick={() => {
-                window.location.hash = 'admin';
+            <a
+              href="/admin"
+              onClick={(e) => {
+                e.preventDefault();
+                window.history.pushState({}, '', '/admin');
+                window.dispatchEvent(new PopStateEvent('popstate'));
               }}
-              className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1.5 transition-colors font-bold normal-case tracking-wider"
+              className="hover:text-slate-300 transition-colors cursor-pointer"
             >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Admin Access</span>
-            </button>
+              Admin
+            </a>
           </div>
         </div>
       </div>
