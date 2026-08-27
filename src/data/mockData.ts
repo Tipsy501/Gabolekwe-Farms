@@ -6,7 +6,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     title: 'Gabolekwe Farms',
     subtitle: 'Horticulture • Beef Products • Agricultural Technology',
     description: 'A proud Botswana agricultural enterprise based in Gweta, dedicated to sustainable livestock production, animal feed, fresh horticultural produce, and agricultural innovation.',
-    image: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=2000&q=80',
+    image: 'https://res.cloudinary.com/kxeewabw/image/upload/f_auto,q_auto/v1787213937/gabolekwe_farms/hxth2narejlovpvowaly.jpg',
     ctaText: 'Explore Our Services',
     ctaLink: 'services',
     badge: 'Gweta, Botswana'
@@ -16,7 +16,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     title: 'Horticulture',
     subtitle: 'Fresh produce grown with purpose.',
     description: 'Cultivating nutrient-dense vegetables and fresh crops using precision drip irrigation and sustainable soil management across fertile Botswana lands.',
-    image: 'https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&w=2000&q=80',
+    image: 'https://res.cloudinary.com/kxeewabw/image/upload/f_auto,q_auto/v1787213783/gabolekwe_farms/kwwdowwthlnbhbrm2bpf.jpg',
     ctaText: 'Discover Horticulture',
     ctaLink: 'services',
     badge: 'Farm-Fresh Harvest'
@@ -26,7 +26,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     title: 'Beef Products',
     subtitle: 'Quality beef from Botswana.',
     description: 'Raising world-class livestock on natural pastures with rigorous veterinary care, delivering premium grade Botswana beef trusted locally and internationally.',
-    image: 'https://images.unsplash.com/photo-1545936856-d713c23945a8?auto=format&fit=crop&w=2000&q=80',
+    image: 'https://res.cloudinary.com/kxeewabw/image/upload/f_auto,q_auto/v1787213651/gabolekwe_farms/gwzgtej4lehsqnoxmmil.jpg',
     ctaText: 'View Beef Grades',
     ctaLink: 'beef',
     badge: 'World-Class Livestock'
@@ -36,7 +36,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     title: 'Agricultural Technology',
     subtitle: 'Developing smarter farm management solutions.',
     description: 'Pioneering digital transformation in African agriculture with intelligent software for crop monitoring, resource allocation, and yield optimization.',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=2000&q=80',
+    image: 'https://res.cloudinary.com/kxeewabw/image/upload/f_auto,q_auto/v1787214480/gabolekwe_farms/i4vr9sglepunzorybbwj.jpg',
     ctaText: 'Learn About Our Tech',
     ctaLink: 'services',
     badge: 'Smart Farming Innovation'
@@ -50,7 +50,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     shortDesc: 'Fresh vegetables including cabbage, tomatoes, spinach, rape, chomolia, and green pepper.',
     fullDesc: 'Our horticulture division in Gweta cultivates a diverse range of fresh vegetables including cabbage, tomatoes, spinach, rape, chomolia, and green pepper. We proudly supply local markets, vendors, and lodges in Gweta, Maun, and surrounding areas with reliable, farm-fresh produce grown with care.',
     iconName: 'Sprout',
-    image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://res.cloudinary.com/kxeewabw/image/upload/f_auto,q_auto/v1787215505/gabolekwe_farms/sewy2mzogt5pf3jf0yz5.jpg',
     benefits: [
       'Fresh production of cabbage, tomatoes, spinach, rape, chomolia, and green pepper',
       'Reliable supply for local markets, vendors, and lodges in Gweta and Maun',
@@ -65,7 +65,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     shortDesc: 'Cattle and goat production alongside animal feed cultivation.',
     fullDesc: 'Gabolekwe Farms is actively engaged in cattle and goat production, supported by on-site animal feed cultivation. We maintain high standards of livestock husbandry and veterinary care, supplying quality beef and livestock to local and regional buyers.',
     iconName: 'Beef',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://res.cloudinary.com/kxeewabw/image/upload/f_auto,q_auto/v1787215682/gabolekwe_farms/eaz1fghnckehvfxl19z3.jpg',
     benefits: [
       'Cattle and goat livestock production',
       'Animal feed cultivation to support herd health',
@@ -80,7 +80,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     shortDesc: 'Water management and irrigation solutions for agricultural efficiency.',
     fullDesc: 'Our agricultural services include irrigation system design and technical consultation to help farmers optimize water usage for crop production in Botswana’s climate.',
     iconName: 'Droplets',
-    image: 'https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://res.cloudinary.com/kxeewabw/image/upload/f_auto,q_auto/v1787215777/gabolekwe_farms/f9kufc98782a20zffwh4.jpg',
     benefits: [
       'Practical irrigation layout and design',
       'Water efficiency guidance for vegetable and feed crops',
@@ -95,7 +95,7 @@ export const SERVICES_LIST: ServiceItem[] = [
     shortDesc: 'Digital tools designed to assist with farm record keeping and operations.',
     fullDesc: 'We develop farm management software applications designed to help agricultural operations track livestock, monitor inventory, manage crop schedules, and streamline daily administrative tasks.',
     iconName: 'Cpu',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1000&q=80',
+    image: 'https://res.cloudinary.com/kxeewabw/image/upload/f_auto,q_auto/v1787215857/gabolekwe_farms/f4931a3q84c4x4g0eab1.jpg',
     benefits: [
       'Digital record keeping for livestock and crops',
       'Task and schedule management for farm workers',

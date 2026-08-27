@@ -17,7 +17,7 @@ import { HeroSlide, ServiceItem, BeefProductGrade, GalleryItem, NewsArticle, Enq
 import { INITIAL_HORTICULTURE_PRODUCTS } from '../data/horticultureData';
 import { auth, googleProvider } from './firebase';
 import { signInWithEmailAndPassword, signInWithPopup, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from 'firebase/auth';
-import { saveMediaToSupabase, fetchMediaFromSupabase, deleteMediaFromSupabase, fetchCMSContentFromSupabase, saveCMSContentToSupabase } from './supabase';
+import { saveMediaToSupabase, fetchMediaFromSupabase, deleteMediaFromSupabase, fetchCMSContentFromSupabase, fetchAllCMSContent, saveCMSContentToSupabase } from './supabase';
 import { getCloudinaryConfig, uploadToCloudinary } from './cloudinary';
 
 interface CMSContextType {
@@ -168,18 +168,24 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return () => unsubscribe();
   }, [adminUsers]);
 
-  // Load CMS data from Supabase
+  // Load CMS data from Supabase / API
   useEffect(() => {
     async function loadData() {
       try {
-        // Try loading siteConfig from Supabase
-        const remoteConfig = await fetchCMSContentFromSupabase<SiteConfig>('site_config');
+        console.log('[CMS Store] Initiating data hydration...');
+        const allContent = await fetchAllCMSContent();
+
+        // 1. Site Config
+        const remoteConfig = allContent['site_config'];
         if (remoteConfig) {
+          console.log('[CMS Store] Applied remote site_config');
           setSiteConfig({ ...DEFAULT_SITE_CONFIG, ...remoteConfig });
+        } else {
+          console.warn('[CMS Store Notice] site_config not in remote payload, checking fallback');
         }
 
-        // Load Admin Users
-        const remoteAdmins = await fetchCMSContentFromSupabase<AdminUserRecord[]>('admins');
+        // 2. Admin Users
+        const remoteAdmins = allContent['admins'];
         if (remoteAdmins && Array.isArray(remoteAdmins)) {
           if (!remoteAdmins.some(a => a.email.toLowerCase().trim() === 'topogabolekwe@gmail.com')) {
             remoteAdmins.push({
@@ -193,63 +199,85 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           setAdminUsers(remoteAdmins);
         }
 
-        // Fetch individual media metadata records from Supabase PostgreSQL database
+        // 3. Slideshow
+        const remoteSlides = allContent['slides'];
+        if (remoteSlides && Array.isArray(remoteSlides) && remoteSlides.length > 0) {
+          console.log(`[CMS Store] Applied ${remoteSlides.length} remote slides`);
+          setSlides(remoteSlides);
+        }
+
+        // 4. Services
+        const remoteServices = allContent['services'];
+        if (remoteServices && Array.isArray(remoteServices) && remoteServices.length > 0) {
+          console.log(`[CMS Store] Applied ${remoteServices.length} remote services`);
+          setServices(remoteServices);
+        }
+
+        // 5. Beef Products
+        const remoteBeef = allContent['beef_products'];
+        if (remoteBeef && Array.isArray(remoteBeef) && remoteBeef.length > 0) {
+          console.log(`[CMS Store] Applied ${remoteBeef.length} remote beef products`);
+          setBeefProducts(remoteBeef);
+        }
+
+        // 6. Horticulture Products
+        const remoteHort = allContent['horticulture_products'];
+        if (remoteHort && Array.isArray(remoteHort) && remoteHort.length > 0) {
+          console.log(`[CMS Store] Applied ${remoteHort.length} remote horticulture products`);
+          setHorticultureProducts(remoteHort);
+        }
+
+        // 7. Horticulture Page Config
+        const remoteHortPage = allContent['horticulture_page'];
+        if (remoteHortPage) {
+          setHorticulturePageConfig({ ...DEFAULT_HORTICULTURE_PAGE_CONFIG, ...remoteHortPage });
+        }
+
+        // 8. Beef Page Config
+        const remoteBeefPage = allContent['beef_page'];
+        if (remoteBeefPage) {
+          setBeefPageConfig({ ...DEFAULT_BEEF_PAGE_CONFIG, ...remoteBeefPage });
+        }
+
+        // 9. Gallery
+        const remoteGallery = allContent['gallery'];
+        if (remoteGallery && Array.isArray(remoteGallery) && remoteGallery.length > 0) {
+          console.log(`[CMS Store] Applied ${remoteGallery.length} remote gallery items`);
+          setGallery(remoteGallery);
+        }
+
+        // 10. News
+        const remoteNews = allContent['news'];
+        if (remoteNews && Array.isArray(remoteNews) && remoteNews.length > 0) {
+          console.log(`[CMS Store] Applied ${remoteNews.length} remote news articles`);
+          setNews(remoteNews);
+        }
+
+        // 11. Enquiries
+        const remoteEnquiries = allContent['enquiries'];
+        if (remoteEnquiries && Array.isArray(remoteEnquiries)) {
+          setEnquiries(remoteEnquiries);
+        }
+
+        // 12. Media Metadata & Photos
         let loadedMedia: MediaItem[] = [];
         try {
           loadedMedia = await fetchMediaFromSupabase();
           if (loadedMedia.length > 0) {
             setMediaItems(loadedMedia);
+            const mediaUrls = loadedMedia.map(m => m.secureUrl || m.url).filter(Boolean);
+            setPhotos(mediaUrls);
           }
         } catch (mErr) {
-          console.warn('[CMS Store] Supabase media fetch warning:', mErr);
+          console.error('[CMS Store] Error fetching media metadata:', mErr);
         }
 
-        const mediaUrls = loadedMedia.map(m => m.secureUrl || m.url).filter(Boolean);
-        const combinedPhotos = Array.from(new Set([...mediaUrls, ...INITIAL_PHOTOS]));
-        setPhotos(combinedPhotos);
-
-        // Load Slideshow
-        const remoteSlides = await fetchCMSContentFromSupabase<HeroSlide[]>('slides');
-        if (remoteSlides && Array.isArray(remoteSlides)) setSlides(remoteSlides);
-
-        // Load Services
-        const remoteServices = await fetchCMSContentFromSupabase<ServiceItem[]>('services');
-        if (remoteServices && Array.isArray(remoteServices)) setServices(remoteServices);
-
-        // Load Beef Products
-        const remoteBeef = await fetchCMSContentFromSupabase<BeefProductGrade[]>('beef_products');
-        if (remoteBeef && Array.isArray(remoteBeef)) setBeefProducts(remoteBeef);
-
-        // Load Horticulture Products
-        const remoteHort = await fetchCMSContentFromSupabase<HorticultureProduct[]>('horticulture_products');
-        if (remoteHort && Array.isArray(remoteHort)) setHorticultureProducts(remoteHort);
-
-        // Load Horticulture Page Config
-        const remoteHortPage = await fetchCMSContentFromSupabase<HorticulturePageConfig>('horticulture_page');
-        if (remoteHortPage) {
-          setHorticulturePageConfig({ ...DEFAULT_HORTICULTURE_PAGE_CONFIG, ...remoteHortPage });
+        if (Object.keys(allContent).length === 0) {
+          console.error('[CMS Store Critical Error] No CMS content was retrieved from Supabase or /api/cms. Ensure VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are configured in Vercel Production Environment Variables.');
         }
-
-        // Load Beef Page Config
-        const remoteBeefPage = await fetchCMSContentFromSupabase<BeefPageConfig>('beef_page');
-        if (remoteBeefPage) {
-          setBeefPageConfig({ ...DEFAULT_BEEF_PAGE_CONFIG, ...remoteBeefPage });
-        }
-
-        // Load Gallery
-        const remoteGallery = await fetchCMSContentFromSupabase<GalleryItem[]>('gallery');
-        if (remoteGallery && Array.isArray(remoteGallery)) setGallery(remoteGallery);
-
-        // Load News
-        const remoteNews = await fetchCMSContentFromSupabase<NewsArticle[]>('news');
-        if (remoteNews && Array.isArray(remoteNews)) setNews(remoteNews);
-
-        // Load Enquiries
-        const remoteEnquiries = await fetchCMSContentFromSupabase<Enquiry[]>('enquiries');
-        if (remoteEnquiries && Array.isArray(remoteEnquiries)) setEnquiries(remoteEnquiries);
 
       } catch (err) {
-        console.warn('[CMS Store] Error loading content from Supabase:', err);
+        console.error('[CMS Store Fatal Exception] Error loading content from Supabase:', err);
       } finally {
         setIsLoading(false);
       }

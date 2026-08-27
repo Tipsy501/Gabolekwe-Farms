@@ -169,8 +169,8 @@ export interface SiteConfig {
 }
 
 export const DEFAULT_SITE_CONFIG: SiteConfig = {
-  logoUrl: '/src/assets/images/gabolekwe_farms_logo_1787573927200.jpg',
-  faviconUrl: '/src/assets/images/gabolekwe_favicon_1787573949057.jpg',
+  logoUrl: 'https://res.cloudinary.com/kxeewabw/image/upload/f_auto,q_auto/v1787575823/gabolekwe_farms/pzznrgfr5vbcpnrklde8.png',
+  faviconUrl: 'https://res.cloudinary.com/kxeewabw/image/upload/f_auto,q_auto/v1787575823/gabolekwe_farms/pzznrgfr5vbcpnrklde8.png',
   siteName: 'Gabolekwe Farms',
   tagline: 'Growing quality. Building agriculture.',
   aboutTitle: 'Gabolekwe Farms in Gweta, Botswana',
@@ -178,9 +178,9 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   aboutMission: 'To sustainably produce quality beef, livestock, and fresh vegetables while supplying local markets, vendors, and lodges with reliable agricultural produce.',
   aboutVision: 'To be a trusted commercial agricultural enterprise in Botswana, advancing food security, sustainable livestock management, and agricultural innovation.',
   aboutHistory: 'Based in Gweta, Botswana, Gabolekwe Farms is a commercial agricultural enterprise engaged in cattle and goat production, animal feed cultivation, and diverse horticulture. The farm produces fresh vegetables including cabbage, tomatoes, spinach, rape, chomolia, and green pepper, proudly supplying local markets, vendors, and lodges in Gweta, Maun, and surrounding areas.',
-  aboutImage: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80',
+  aboutImage: 'https://res.cloudinary.com/kxeewabw/image/upload/f_auto,q_auto/v1787214894/gabolekwe_farms/nqnaass5utnapmqvqdgv.jpg',
   address: 'Gweta, Botswana',
-  phone: '+267 72 820 542 / +267 74 061 099',
+  phone: '+267 72 820 542 / +267 74 061 099 / +267 73 004 101',
   email: 'gabolekwefarms@gmail.com',
   hours: 'Monday – Friday: 07:30 - 17:00 | Saturday: 08:00 - 13:00',
   facebook: 'https://www.facebook.com/gabolekwefarms',
@@ -192,11 +192,11 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   seoDescription: 'Gabolekwe Farms is a commercial agricultural enterprise in Gweta, Botswana specializing in fresh horticulture produce, commercial beef products, irrigation design, and farm management technology.',
   horticultureHeroTitle: 'Horticulture Division',
   horticultureHeroSubtitle: 'Cultivating nutrient-dense cabbage, tomatoes, spinach, rape, chomolia, and green peppers using precision irrigation and sustainable soil stewardship across fertile Botswana lands.',
-  horticultureHeroImage: 'https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&w=2000&q=80',
+  horticultureHeroImage: 'https://res.cloudinary.com/kxeewabw/image/upload/f_auto,q_auto/v1787213783/gabolekwe_farms/kwwdowwthlnbhbrm2bpf.jpg',
   horticultureHeroCta: 'Explore Fresh Produce',
   beefHeroTitle: 'World-Class Botswana Beef',
   beefHeroSubtitle: 'Raised on pristine Savannah grasslands with rigorous ethical husbandry, natural forage, and complete veterinary compliance from pasture to wholesale market.',
-  beefHeroImage: 'https://images.unsplash.com/photo-1545936856-d713c23945a8?auto=format&fit=crop&w=2000&q=80',
+  beefHeroImage: 'https://res.cloudinary.com/kxeewabw/image/upload/f_auto,q_auto/v1787213651/gabolekwe_farms/gwzgtej4lehsqnoxmmil.jpg',
   beefHeroCta: 'Explore Beef Grades'
 };
 

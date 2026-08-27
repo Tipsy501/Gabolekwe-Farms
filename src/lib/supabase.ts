@@ -10,8 +10,12 @@ export interface SupabaseConfig {
 const STORAGE_KEY_SUPABASE_URL = 'gabolekwe_supabase_url';
 const STORAGE_KEY_SUPABASE_KEY = 'gabolekwe_supabase_anon_key';
 
+// Default Supabase project credentials for Gabolekwe Farms
+const DEFAULT_SUPABASE_URL = 'https://rmwqfsyladgmfjhjvqnv.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJtd3Fmc3lsYWRnbWZqaGp2cW52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcxMjE5MTQsImV4cCI6MjEwMjY5NzkxNH0.mGR_vtTTJ8h02g9bxPkzftoU9MhWgnrsb57EFZt39aU';
+
 /**
- * Get active Supabase configuration from environment variables or localStorage
+ * Get active Supabase configuration from environment variables, localStorage, or project defaults
  */
 export const getSupabaseConfig = (): SupabaseConfig => {
   const metaEnv = (import.meta as any).env || {};
@@ -22,8 +26,8 @@ export const getSupabaseConfig = (): SupabaseConfig => {
   const localKey = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY_SUPABASE_KEY) || '' : '';
 
   return {
-    url: envUrl || localUrl,
-    anonKey: envKey || localKey,
+    url: envUrl || localUrl || DEFAULT_SUPABASE_URL,
+    anonKey: envKey || localKey || DEFAULT_SUPABASE_ANON_KEY,
   };
 };
 
@@ -167,26 +171,100 @@ export const saveMediaToSupabase = async (item: MediaItem): Promise<MediaItem> =
 };
 
 /**
- * Fetch all media items from Supabase PostgreSQL database (Public read)
+ * Fetch all media items from /api/media endpoint or direct Supabase PostgreSQL database
  */
 export const fetchMediaFromSupabase = async (): Promise<MediaItem[]> => {
+  // 1. Try serverless backend endpoint first
+  try {
+    const res = await fetch('/api/media');
+    if (res.ok) {
+      const data = await res.json();
+      if (data.items && Array.isArray(data.items)) {
+        console.log(`[Supabase Media] Loaded ${data.items.length} media items via /api/media`);
+        return data.items.map((row: any) => mapSupabaseToMediaItem(row as SupabaseMediaRecord));
+      }
+    }
+  } catch (apiErr) {
+    console.warn('[Supabase Media API Warning] /api/media not available, trying direct client:', apiErr);
+  }
+
+  // 2. Fallback to direct client
   const client = getSupabaseClient();
   if (!client) {
-    console.warn('[Supabase API] Client not configured.');
+    console.error('[Supabase Media FATAL] Supabase client is not configured and /api/media failed.');
     return [];
   }
 
-  const { data, error } = await client
-    .from('media')
-    .select('*')
-    .order('created_at', { ascending: false });
+  try {
+    const { data, error } = await client
+      .from('media')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('[Supabase API Fetch Error]:', error);
-    throw new Error(`Failed to fetch media from Supabase: ${error.message}`);
+    if (error) {
+      console.error('[Supabase API Fetch Error]:', error);
+      throw new Error(`Failed to fetch media from Supabase: ${error.message}`);
+    }
+
+    console.log(`[Supabase Media] Loaded ${data?.length || 0} media items via direct Supabase client`);
+    return (data || []).map((row: any) => mapSupabaseToMediaItem(row as SupabaseMediaRecord));
+  } catch (err) {
+    console.error('[Supabase Media Query Exception]:', err);
+    return [];
+  }
+};
+
+/**
+ * Fetch all CMS sections in a single fast batch from /api/cms or direct Supabase database
+ */
+export const fetchAllCMSContent = async (): Promise<Record<string, any>> => {
+  console.log('[CMS Sync] Initiating fetch for all CMS content...');
+
+  // 1. Try /api/cms first (works in Vercel serverless & local development)
+  try {
+    const res = await fetch('/api/cms');
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.data) {
+        console.log(`[CMS Sync Success] Fetched ${Object.keys(json.data).length} CMS sections from /api/cms:`, Object.keys(json.data));
+        return json.data;
+      }
+    } else {
+      console.warn(`[CMS Sync Warning] /api/cms returned status ${res.status}: ${res.statusText}`);
+    }
+  } catch (apiErr) {
+    console.warn('[CMS Sync Warning] /api/cms unreachable, attempting direct Supabase query:', apiErr);
   }
 
-  return (data || []).map((row: any) => mapSupabaseToMediaItem(row as SupabaseMediaRecord));
+  // 2. Try direct Supabase client query
+  const client = getSupabaseClient();
+  if (client) {
+    try {
+      const { data, error } = await client
+        .from('cms_content')
+        .select('key, payload, updated_at');
+
+      if (error) {
+        console.error('[CMS Direct Supabase Error]:', error.message);
+      } else if (data && Array.isArray(data)) {
+        const contentMap: Record<string, any> = {};
+        for (const row of data) {
+          if (row.key) {
+            contentMap[row.key] = row.payload;
+          }
+        }
+        console.log(`[CMS Sync Success] Fetched ${Object.keys(contentMap).length} CMS sections from direct Supabase query:`, Object.keys(contentMap));
+        return contentMap;
+      }
+    } catch (sbErr) {
+      console.error('[CMS Direct Supabase Exception]:', sbErr);
+    }
+  } else {
+    console.error('[CMS Configuration Missing] Supabase client could not be initialized. Check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+  }
+
+  console.error('[CMS Sync FAILED] Could not fetch CMS content from /api/cms or Supabase client. Verify Vercel environment variables.');
+  return {};
 };
 
 /**
@@ -223,15 +301,27 @@ export const deleteMediaFromSupabase = async (id: string): Promise<void> => {
 };
 
 /**
- * Fetch a CMS section payload from Supabase
+ * Fetch a single CMS section payload from /api/cms/:key or direct Supabase
  */
 export const fetchCMSContentFromSupabase = async <T>(key: string): Promise<T | null> => {
-  const config = getSupabaseConfig();
-  console.log(`[Diagnostic] Supabase URL in use: ${config.url || 'None'}`);
+  // 1. Try serverless backend route
+  try {
+    const res = await fetch(`/api/cms/${encodeURIComponent(key)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.payload) {
+        console.log(`[CMS Fetch] Key "${key}" loaded via /api/cms/${key}`);
+        return data.payload as T;
+      }
+    }
+  } catch (apiErr) {
+    console.warn(`[CMS Fetch Warning] /api/cms/${key} not available:`, apiErr);
+  }
 
+  // 2. Try direct Supabase client
   const client = getSupabaseClient();
   if (!client) {
-    console.log(`[Diagnostic] CMS Key ${key} loaded from Supabase: false (Client not configured, using fallback default)`);
+    console.error(`[CMS ERROR] Key "${key}" could not be fetched: Supabase client is not initialized.`);
     return null;
   }
 
@@ -243,21 +333,19 @@ export const fetchCMSContentFromSupabase = async <T>(key: string): Promise<T | n
       .maybeSingle();
 
     if (error) {
-      console.warn(`[Supabase CMS Fetch Warning] key=${key}:`, error.message);
-      console.log(`[Diagnostic] CMS Key ${key} loaded from Supabase: false (Error/Fallback)`);
+      console.error(`[Supabase CMS Fetch Error] key=${key}:`, error.message);
       return null;
     }
 
-    const found = !!(data && data.payload);
-    console.log(`[Diagnostic] CMS Key ${key} loaded from Supabase: ${found} (${found ? 'Remote database content' : 'Using default fallback'})`);
-
-    if (found) {
+    if (data && data.payload) {
+      console.log(`[CMS Fetch] Key "${key}" loaded from direct Supabase query`);
       return data.payload as T;
     }
   } catch (err) {
-    console.warn(`[Supabase CMS Fetch Exception] key=${key}:`, err);
-    console.log(`[Diagnostic] CMS Key ${key} loaded from Supabase: false (Exception/Fallback)`);
+    console.error(`[Supabase CMS Fetch Exception] key=${key}:`, err);
   }
+
+  console.warn(`[CMS Fetch] Key "${key}" was not found in Supabase database.`);
   return null;
 };
 

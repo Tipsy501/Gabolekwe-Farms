@@ -90,15 +90,12 @@ async function verifyFirebaseAdminToken(authHeader?: string, req?: express.Reque
 /**
  * Get Supabase Client for server-side operations using Service Role Key (bypassing RLS securely)
  */
-function getBackendSupabaseClient(req: express.Request) {
-  const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || req.headers['x-supabase-url'] as string || '';
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || '';
-
-  console.log(`[Supabase Diagnostics] SUPABASE_URL configured: ${!!url}`);
-  console.log(`[Supabase Diagnostics] SUPABASE_SERVICE_ROLE_KEY configured: ${!!serviceKey}`);
+function getBackendSupabaseClient(req?: express.Request) {
+  const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || (req ? req.headers['x-supabase-url'] as string : '') || 'https://rmwqfsyladgmfjhjvqnv.supabase.co';
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || process.env.SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY || process.env.VITE_SUPABASE_ANON_KEY || (req ? req.headers['x-supabase-key'] as string : '') || '';
 
   if (!url || !serviceKey) {
-    throw new Error('Missing server-side Supabase configuration. SUPABASE_SERVICE_ROLE_KEY and VITE_SUPABASE_URL must be configured.');
+    throw new Error('Missing server-side Supabase configuration. SUPABASE_SERVICE_ROLE_KEY or VITE_SUPABASE_URL must be configured.');
   }
 
   return createClient(url, serviceKey, {
@@ -109,6 +106,105 @@ function getBackendSupabaseClient(req: express.Request) {
 // Health check endpoint
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Public API endpoint for reading client-safe environment configuration
+app.get('/api/config', (_req, res) => {
+  const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || 'https://rmwqfsyladgmfjhjvqnv.supabase.co';
+  const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || '';
+  const cloudinaryCloudName = process.env.VITE_CLOUDINARY_CLOUD_NAME || 'kxeewabw';
+  const cloudinaryUploadPreset = process.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'gabolekwe_preset';
+
+  res.json({
+    supabaseUrl,
+    supabaseAnonKey,
+    cloudinaryCloudName,
+    cloudinaryUploadPreset
+  });
+});
+
+// Public API endpoint to fetch all CMS content records in a single batch
+app.get('/api/cms', async (req, res) => {
+  try {
+    const supabase = getBackendSupabaseClient(req);
+    const { data, error } = await supabase
+      .from('cms_content')
+      .select('key, payload, updated_at');
+
+    if (error) {
+      console.error('[Server CMS Fetch All Error]:', error);
+      res.status(500).json({ error: `Supabase query failed: ${error.message}` });
+      return;
+    }
+
+    const contentMap: Record<string, any> = {};
+    if (data && Array.isArray(data)) {
+      for (const row of data) {
+        if (row.key) {
+          contentMap[row.key] = row.payload;
+        }
+      }
+    }
+
+    res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
+    res.json({ success: true, count: data?.length || 0, data: contentMap });
+  } catch (err: any) {
+    console.error('[Server CMS Fetch All Exception]:', err);
+    res.status(500).json({ error: err.message || 'Internal server error fetching CMS content.' });
+  }
+});
+
+// Public API endpoint to fetch a single CMS content section
+app.get('/api/cms/:key', async (req, res) => {
+  const key = req.params.key;
+  if (!key) {
+    res.status(400).json({ error: 'Missing key parameter.' });
+    return;
+  }
+
+  try {
+    const supabase = getBackendSupabaseClient(req);
+    const { data, error } = await supabase
+      .from('cms_content')
+      .select('key, payload, updated_at')
+      .eq('key', key)
+      .maybeSingle();
+
+    if (error) {
+      console.error(`[Server CMS Fetch Key Error] key=${key}:`, error);
+      res.status(500).json({ error: `Supabase query failed: ${error.message}` });
+      return;
+    }
+
+    res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
+    res.json({ success: true, key, payload: data?.payload || null, updatedAt: data?.updated_at || null });
+  } catch (err: any) {
+    console.error(`[Server CMS Fetch Key Exception] key=${key}:`, err);
+    res.status(500).json({ error: err.message || 'Internal server error fetching CMS key.' });
+  }
+});
+
+// Public API endpoint to fetch all media metadata items from Supabase
+app.get('/api/media', async (req, res) => {
+  try {
+    const supabase = getBackendSupabaseClient(req);
+    const { data, error } = await supabase
+      .from('media')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('[Server Media Fetch All Error]:', error);
+      res.status(500).json({ error: `Supabase media query failed: ${error.message}` });
+      return;
+    }
+
+    res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
+    res.json({ success: true, items: data || [] });
+  } catch (err: any) {
+    console.error('[Server Media Fetch All Exception]:', err);
+    res.status(500).json({ error: err.message || 'Internal server error fetching media.' });
+  }
 });
 
 // Secure API endpoint for saving CMS content in Supabase
