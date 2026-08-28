@@ -272,9 +272,9 @@ export const HomeSection: React.FC<HomeSectionProps> = ({ onNavigate }) => {
             <div className="w-12 h-12 bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center mb-6">
               <MapPin className="w-6 h-6" />
             </div>
-            <h4 className="text-xl font-serif text-slate-900 mb-3 font-bold">Proudly Local Supply</h4>
+            <h4 className="text-xl font-serif text-slate-900 mb-3 font-bold">Proudly local supply • Gweta, Maun & Nata</h4>
             <p className="text-xs text-slate-600 font-light leading-relaxed">
-              Reliable delivery and fresh supply partnerships with local markets, vendors, and lodges across Gweta and Maun.
+              Reliable delivery and fresh supply partnerships with local markets, vendors, and lodges across Gweta, Maun & Nata.
             </p>
           </div>
 
